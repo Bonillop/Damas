@@ -12,11 +12,13 @@ class Board extends React.Component {
     return(
       <div className="Board">
         { 
-          this.props.data.map( (row) => { 
+          this.props.data.map( (row, index) => { 
             i += 1
-            return <Row squares = {row} 
+            return <Row 
+                        key={index}
+                        squares = {row} 
                         rowNumber = {i-1} 
-                        handleButtonChange = {this.props.handleButtonChange}
+                        // handleButtonChange = {this.props.handleButtonChange}
                         fillings = {this.props.fillings}
                         handleDrag = {this.props.handleDrag} />
           } )
@@ -28,7 +30,6 @@ class Board extends React.Component {
 
 Board.propTypes = {
   data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
-  handleButtonChange: PropTypes.func.isRequired,
   fillings: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 

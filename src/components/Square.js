@@ -12,12 +12,19 @@ class Square extends React.Component {
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat"
     }
+    let whiteSquareStyle = {
+      backgroundImage: background,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundColor: "rgb(111, 111, 190)"
+    }
     
     return (
     <div 
     className="Square" 
-    onClick={ () => {this.props.handleButtonChange(i,j)} }
-    style={squareStyle}
+    // onClick={ () => {this.props.handleButtonChange(i,j)} }
+    style={(j % 2 === 0 && i % 2 === 0) || (j % 2 !== 0 && i % 2 !== 0)? whiteSquareStyle : squareStyle}
 
     draggable
 
