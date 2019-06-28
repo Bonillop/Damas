@@ -20,11 +20,14 @@ class App extends React.Component {
       ],
       fillings: [
         "",
+        "https://cdn.shopify.com/s/files/1/1218/5438/products/IMG_5341_clipped_rev_3_1024x1024.png?v=1527185281",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Location_dot_black.svg/1024px-Location_dot_black.svg.png",
         "https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L._SY355_.png",
         "https://media0.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif?cid=790b76115d0a4d1b7442634759187d4c&rid=giphy.gif",
         "https://thumbs.gfycat.com/FreeAnyIndianelephant-max-1mb.gif",
-        "https://media.tenor.com/images/fd967aeb717528e87c36a6b32e7b9b1a/tenor.gif"
-      ]
+        "https://media.tenor.com/images/fd967aeb717528e87c36a6b32e7b9b1a/tenor.gif",
+      ],
+      player1: true
     };
     // this.handleButtonChange = this.handleButtonChange.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
@@ -69,32 +72,38 @@ class App extends React.Component {
     let distanceJ = endJ - startJ; //columna
 
     return (
-      (distanceI === 1 && Math.abs(distanceJ) === 1 && player === 1 && destiny !== player) ||
-      (distanceI === -1 && Math.abs(distanceJ) === 1 && player === 2 && destiny !== player)
+      (distanceI === 1 &&
+        Math.abs(distanceJ) === 1 &&
+        player === 1 &&
+        destiny !== player && !this.state.player1) ||
+      (distanceI === -1 &&
+        Math.abs(distanceJ) === 1 &&
+        player === 2 &&
+        destiny !== player && this.state.player1)
     );
   }
 
-  validateEat(startI, startJ, endI, endJ){
+  validateEat(startI, startJ, endI, endJ) {
     let player = this.state.data[startI][startJ];
     let destiny = this.state.data[endI][endJ];
 
-    return (destiny !== 0 && player !== destiny);
+    return destiny !== 0 && player !== destiny;
   }
 
-  calculateNewPositionAfterEat(startI, startJ, endI, endJ){
+  calculateNewPositionAfterEat(startI, startJ, endI, endJ) {
     let newEndI;
     let newEndJ;
-    if(endJ < startJ){
+    if (endJ < startJ) {
       newEndJ = endJ - 1;
     } else {
       newEndJ = endJ + 1;
     }
-    if(endI < startI){
+    if (endI < startI) {
       newEndI = endI - 1;
     } else {
       newEndI = endI + 1;
     }
-    if(this.state.data[newEndI][newEndJ] === 0){
+    if (this.state.data[newEndI][newEndJ] === 0) {
       return [newEndI, newEndJ];
     } else {
       return -1;
@@ -102,24 +111,30 @@ class App extends React.Component {
   }
 
   handleDrag(start_i, start_j, end_i, end_j) {
+    let nextPlayer = !this.state.player1;
     let new_data = this.state.data.map(row => {
       return [...row];
     });
-    if(this.validateMove(start_i, start_j, end_i, end_j)){
-      if(this.validateEat(start_i, start_j, end_i, end_j)){
-        let coords = this.calculateNewPositionAfterEat(start_i, start_j, end_i, end_j);
-        if(coords === -1){
+    if (this.validateMove(start_i, start_j, end_i, end_j)) {
+      if (this.validateEat(start_i, start_j, end_i, end_j)) {
+        let coords = this.calculateNewPositionAfterEat(
+          start_i,
+          start_j,
+          end_i,
+          end_j
+        );
+        if (coords === -1) {
           return;
         } else {
           new_data[coords[0]][coords[1]] = new_data[start_i][start_j];
           new_data[end_i][end_j] = 0;
           new_data[start_i][start_j] = 0;
-          this.setState({ data: new_data });  
+          this.setState({ data: new_data, player1: nextPlayer });
         }
       } else {
         new_data[end_i][end_j] = new_data[start_i][start_j];
         new_data[start_i][start_j] = 0;
-        this.setState({ data: new_data });
+        this.setState({ data: new_data, player1: nextPlayer });
       }
     }
   }
